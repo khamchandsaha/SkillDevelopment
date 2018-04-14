@@ -8,5 +8,11 @@
 </head>
 <body>
 
+<h3>File Upload:</h3>
+      <form method="post" action="UploadServlet" enctype="multipart/form-data">
+	Select file to upload:
+	<input type="file" name="file" id="fileChooser"/><br/><br/>
+	<input type="submit" value="Upload" />
+	</form>
 </body>
 </html>

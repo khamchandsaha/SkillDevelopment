@@ -30,6 +30,7 @@ public class HashAlgorithm {
 	        hash = hexString.toString();
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
+			System.out.println("error in HashAlgorithm file");
 		}
 		
 		return hash;
