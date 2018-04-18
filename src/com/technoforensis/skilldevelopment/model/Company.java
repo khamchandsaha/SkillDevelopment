@@ -1,8 +1,8 @@
-package model;
+package com.technoforensis.skilldevelopment.model;
 
 /**
  * @author khamchand
- * This class is a model of Company
+ * This class is a com.technoforensis.skilldevelopment.model of Company
  * and it will store the details of a company
  */
 public class Company {

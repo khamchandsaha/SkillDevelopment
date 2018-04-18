@@ -1,4 +1,4 @@
-package model;
+package com.technoforensis.skilldevelopment.model;
 
 public class Job {
 	int job_id,company_id,application_fee,experience_required;

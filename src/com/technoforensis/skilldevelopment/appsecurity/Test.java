@@ -1,6 +1,6 @@
-package appsecurity;
+package com.technoforensis.skilldevelopment.appsecurity;
 
-import appsecurity.HashAlgorithm;
+import com.technoforensis.skilldevelopment.appsecurity.HashAlgorithm;
 
 public class Test {
 

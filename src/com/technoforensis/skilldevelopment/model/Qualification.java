@@ -1,4 +1,4 @@
-package model;
+package com.technoforensis.skilldevelopment.model;
 
 public class Qualification {
 	int qualification_id;

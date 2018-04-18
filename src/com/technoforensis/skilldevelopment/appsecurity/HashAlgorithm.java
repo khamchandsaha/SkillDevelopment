@@ -1,4 +1,4 @@
-package appsecurity;
+package com.technoforensis.skilldevelopment.appsecurity;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

@@ -1,4 +1,4 @@
-package model;
+package com.technoforensis.skilldevelopment.model;
 
 public class User {
 	int user_id,year_of_experience,qualification,profile_percentage,share_with_company;

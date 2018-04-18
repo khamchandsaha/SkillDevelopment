@@ -1,4 +1,4 @@
-package model;
+package com.technoforensis.skilldevelopment.model;
 
 public class Seminar {
 	int seminar_id,institute_id,seminar_duration,seminar_fee;

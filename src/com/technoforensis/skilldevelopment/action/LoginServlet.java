@@ -1,4 +1,4 @@
-package action;
+package com.technoforensis.skilldevelopment.action;
 
 import java.io.IOException;
 import javax.servlet.ServletException;

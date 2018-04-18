@@ -1,4 +1,4 @@
-package model;
+package com.technoforensis.skilldevelopment.model;
 
 public class Course {
 	int course_id,institute_id,course_duration,course_fee;
