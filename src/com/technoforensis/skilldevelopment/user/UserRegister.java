@@ -31,21 +31,6 @@ public class UserRegister extends HttpServlet {
     }
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		
-		User usr = new User();
-		usr.setFirst_name("firstName");
-		usr.setLast_name("lastName");
-		usr.setMobile("mobileNumber");
-		UserDB dataBase = new UserDB();
-		dataBase.newRegister(usr, "password");	
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-	}
-
-	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -79,12 +64,10 @@ public class UserRegister extends HttpServlet {
 			usr.setLast_name(lastName);
 			usr.setMobile(mobileNumber);
 			UserDB dataBase = new UserDB();
+			//Store in Database
 			dataBase.newRegister(usr, hashCode);			
 		}
-		//
-		//Store in Database
 		
-		doGet(request, response);
 	}
 
 }
