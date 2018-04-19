@@ -23,7 +23,8 @@ public class DBConnection {
 		
 			try{
 				//register driver
-				Class.forName(JDBC_DRIVER);
+				Class.forName("com.mysql.jdbc.Driver").newInstance();
+
 				
 				//register or open a connection with driver manager
 				connection = DriverManager.getConnection(DB_URL,USER,PASS);
@@ -32,7 +33,7 @@ public class DBConnection {
 				se.printStackTrace();
 			}
 			catch(Exception e){
-				System.out.println(e.toString());
+				System.out.println("Error in DBConnection"+e.toString());
 			}
 			return connection;
 		}

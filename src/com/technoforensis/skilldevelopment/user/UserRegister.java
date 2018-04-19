@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.technoforensis.skilldevelopment.appsecurity.HashAlgorithm;
+import com.technoforensis.skilldevelopment.database.UserDB;
+import com.technoforensis.skilldevelopment.model.User;
 
 /**
  * Servlet implementation class UserRegister
@@ -33,6 +35,13 @@ public class UserRegister extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		
+		User usr = new User();
+		usr.setFirst_name("firstName");
+		usr.setLast_name("lastName");
+		usr.setMobile("mobileNumber");
+		UserDB dataBase = new UserDB();
+		dataBase.newRegister(usr, "password");	
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
@@ -65,6 +74,12 @@ public class UserRegister extends HttpServlet {
 			out.println(lastName);
 			out.println(mobileNumber);
 			out.println(password);
+			User usr = new User();
+			usr.setFirst_name(firstName);
+			usr.setLast_name(lastName);
+			usr.setMobile(mobileNumber);
+			UserDB dataBase = new UserDB();
+			dataBase.newRegister(usr, hashCode);			
 		}
 		//
 		//Store in Database

@@ -2,7 +2,7 @@ package com.technoforensis.skilldevelopment.model;
 
 public class User {
 	int user_id,year_of_experience,qualification,profile_percentage,share_with_company;
-	String first_name,middle_name,last_name,dob,mobile,address,email,user_imagea_url,resume_url;
+	String first_name,last_name,dob,mobile,address,email,user_imagea_url,resume_url;
 	public int getUser_id() {
 		return user_id;
 	}
@@ -38,12 +38,6 @@ public class User {
 	}
 	public void setFirst_name(String first_name) {
 		this.first_name = first_name;
-	}
-	public String getMiddle_name() {
-		return middle_name;
-	}
-	public void setMiddle_name(String middle_name) {
-		this.middle_name = middle_name;
 	}
 	public String getLast_name() {
 		return last_name;
