@@ -38,35 +38,6 @@ public class UserDB {
 		return user_id;
 	}
 	
-	
-	/**
-	 * @param user_name
-	 * @return true if user is already present or false
-	 */
-	public boolean checkUser(String user_name)
-	{
-		int user_id = 0;
-		try
-		{
-			Connection conn = DBConnection.getConnection();
-			PreparedStatement pstm = (PreparedStatement) conn.prepareStatement("select member_id from login where user_name = ?");
-			pstm.setString(1, user_name);
-			ResultSet rs = pstm.executeQuery();
-			while(rs.next())
-			{
-				user_id = Integer.parseInt(rs.getString("member_id"));
-			}
-			if(user_id>0)
-			{
-				return true;
-			}
-		}catch(Exception e)
-		{
-			System.out.println("error in UserDB.checkUser"+e.getMessage());
-		}
-		return false;
-	}
-	
 	/**
 	 * @param usr
 	 * @param hashCode
@@ -99,6 +70,43 @@ public class UserDB {
 		{
 			System.out.println("e : in UserDB.newRegister "+e.toString());
 		}
+	}
+	
+	/**
+	 * @param usr
+	 * @return usr 
+	 * The return object user contains all the details of the user
+	 */
+	public User getUserDetails(User usr)
+	{
+		try
+		{
+			Connection conn = DBConnection.getConnection();
+			PreparedStatement pstm = (PreparedStatement) conn.prepareStatement("select * from user_details where user_id = ?");
+			pstm.setInt(1, usr.getUser_id());
+			ResultSet rs = pstm.executeQuery();
+			while(rs.next())
+			{
+				usr.setFirst_name(rs.getString("first_name"));
+				usr.setLast_name(rs.getString("last_name"));
+				usr.setAddress(rs.getString("address"));
+				usr.setDob(rs.getString("dob"));
+				usr.setYear_of_experience(rs.getInt("year_of_experience"));
+				usr.setEmail(rs.getString("email"));
+				usr.setUser_imagea_url(rs.getString("user_image_url"));
+				usr.setResume_url(rs.getString("resume_url"));
+				usr.setQualification(rs.getInt("qualification"));
+				usr.setProfile_percentage(rs.getInt("profile_percentage"));
+				usr.setShare_with_company(rs.getInt("share_with_company"));
+
+			}
+			
+		}catch(Exception e)
+		{
+			System.out.println("Error in UserDB.getUserID"+e.toString());
+		}
+		
+		return usr;
 	}
 
 }

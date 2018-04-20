@@ -7,6 +7,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.technoforensis.skilldevelopment.appsecurity.HashAlgorithm;
+import com.technoforensis.skilldevelopment.database.BasicDBUtility;
+import com.technoforensis.skilldevelopment.database.UserDB;
+import com.technoforensis.skilldevelopment.model.User;
+
 /**
  * Servlet implementation class LoginServlet
  */
@@ -27,7 +32,6 @@ public class LoginServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		System.out.println("Khamchand Saha");
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
@@ -36,6 +40,39 @@ public class LoginServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		String user_name = request.getParameter("user_name");
+		String password = request.getParameter("password");
+		BasicDBUtility dbu = new BasicDBUtility();
+		
+		//check whether the user is present or not
+		if(dbu.checkMember(user_name) == true)
+		{
+			//Generating Hash Code
+			HashAlgorithm hash_algo = new HashAlgorithm();		
+			String hashCode = hash_algo.createHash(password);
+			//Geting the role_id
+			int role_id = dbu.authMember(user_name, hashCode);
+			
+			//role_id 1 denotes individual user
+			if(role_id == 1)
+			{
+				System.out.println("The user is present");
+				UserDB database = new UserDB();
+				int user_id;
+				user_id = database.getUserID(user_name);
+				User usr = new User();
+				usr.setMobile(user_name);
+				usr.setUser_id(user_id);				
+				//This will assign a user object containing all the info of user
+				usr = database.getUserDetails(usr);
+				System.out.println("The user name is: "+usr.getFirst_name()+" "+usr.getLast_name());
+			}
+			
+		}
+		else
+		{
+			System.out.println("user is not presesnt");
+		}
 		doGet(request, response);
 	}
 
