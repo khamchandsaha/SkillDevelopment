@@ -6,6 +6,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.technoforensis.skilldevelopment.appsecurity.HashAlgorithm;
 import com.technoforensis.skilldevelopment.database.BasicDBUtility;
@@ -56,7 +57,7 @@ public class LoginServlet extends HttpServlet {
 			//role_id 1 denotes individual user
 			if(role_id == 1)
 			{
-				System.out.println("The user is present");
+				
 				UserDB database = new UserDB();
 				int user_id;
 				user_id = database.getUserID(user_name);
@@ -65,13 +66,19 @@ public class LoginServlet extends HttpServlet {
 				usr.setUser_id(user_id);				
 				//This will assign a user object containing all the info of user
 				usr = database.getUserDetails(usr);
-				System.out.println("The user name is: "+usr.getFirst_name()+" "+usr.getLast_name());
+				HttpSession session = request.getSession();
+				session.setAttribute("usr", usr);
+				response.sendRedirect("User/userHome.jsp");
+			}
+			else
+			{
+				response.sendRedirect("error.jsp");
 			}
 			
 		}
 		else
 		{
-			System.out.println("user is not presesnt");
+			response.sendRedirect("error.jsp");
 		}
 		doGet(request, response);
 	}
