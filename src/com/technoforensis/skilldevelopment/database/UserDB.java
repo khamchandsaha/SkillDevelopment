@@ -2,8 +2,10 @@ package com.technoforensis.skilldevelopment.database;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 import com.mysql.jdbc.PreparedStatement;
+import com.technoforensis.skilldevelopment.model.Job;
 import com.technoforensis.skilldevelopment.model.User;
 import com.technoforensis.skilldevelopment.utility.DBConnection;
 
@@ -107,6 +109,57 @@ public class UserDB {
 		}
 		
 		return usr;
+	}
+	
+	public ArrayList<Job> getJobHis(User usr)
+	{
+		ArrayList<Job> job_his = new ArrayList<Job>();
+		try
+		{
+			Connection conn = DBConnection.getConnection();
+			PreparedStatement pstm = (PreparedStatement) conn.prepareStatement("SELECT * FROM job_applicants WHERE user_id = ?");
+			pstm.setInt(1, usr.getUser_id());
+			ResultSet rs = pstm.executeQuery();
+			while(rs.next())
+			{
+				System.out.println("job his : "+rs.getInt("job_id"));
+				Job jb = new Job();
+				CompanyDB cmp_database = new CompanyDB();
+				jb.setJob_id(rs.getInt("job_id"));
+				jb = cmp_database.getJobDetails(jb);
+				job_his.add(jb);
+				
+			}
+		}catch(Exception e)
+		{
+			System.out.println("Error in UserDB.getJobHis"+e.toString());
+		}
+		
+		return job_his;
+		
+	}
+	
+	public int[] checkJobUser(User usr)
+	{
+		int[] job_his_ids = new int[100];
+		try
+		{
+			Connection conn = DBConnection.getConnection();
+			PreparedStatement pstm = (PreparedStatement) conn.prepareStatement("SELECT * FROM job_applicants WHERE user_id = ?");
+			pstm.setInt(1, usr.getUser_id());
+			ResultSet rs1 = pstm.executeQuery();
+			int k=0;
+			while(rs1.next())
+			{
+				job_his_ids[k] = rs1.getInt("job_id");
+				k++;
+			}
+		}catch(Exception e)
+		{
+			System.out.println("Error in UserDB.checkJobUser"+e.toString());
+		}
+		
+		return job_his_ids;
 	}
 
 }

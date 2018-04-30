@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
     
-<%@ page import="com.technoforensis.skilldevelopment.model.User" %>
+<%@ page import="com.technoforensis.skilldevelopment.model.Company" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -11,34 +11,30 @@
   <title>Welcome Home</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-  <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <% String path = request.getContextPath(); %>
+  <link rel="stylesheet" href="<%=path %>/bower_components/bootstrap/dist/css/bootstrap.min.css">
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="<%= path %>/bower_components/font-awesome/css/font-awesome.min.css">
   <!-- Ionicons -->
-  <link rel="stylesheet" href="../bower_components/Ionicons/css/ionicons.min.css">
+  <link rel="stylesheet" href="<%= path %>/bower_components/Ionicons/css/ionicons.min.css">
   <!-- Theme style -->
-  <link rel="stylesheet" href="../dist/css/AdminLTE.min.css">
-  <link rel="stylesheet" href="../dist/css/skins/skin-blue.min.css">
+  <link rel="stylesheet" href="<%= path %>/dist/css/AdminLTE.min.css">
+  <link rel="stylesheet" href="<%= path %>/dist/css/skins/skin-blue.min.css">
   <!-- Google Font -->
   <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
 <% 
-	/*String firstName="";
-	String lastName="";
+	String companyName="";
+	Company cmp = new Company();
 	try
 	{
-		User usr = (User) session.getAttribute("usr");
-		 firstName = usr.getFirst_name();
-		 lastName = usr.getLast_name();
-		if(lastName == null)
-		{
-			lastName ="";
-		}
+		cmp = (Company) session.getAttribute("company");
+		companyName = cmp.getCompany_name();
 	}catch(Exception e)
 	{
-		response.sendRedirect("../index.jsp");
-	}*/
+		response.sendRedirect(path+"/index.jsp");
+	}
 	
 %>
 <body class="hold-transition skin-blue sidebar-mini">
@@ -70,22 +66,22 @@
             <!-- Menu Toggle Button -->
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <!-- The user image in the navbar-->
-              <img src="../dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
+              <img src="<%= path %>/dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
               <!-- hidden-xs hides the username on small devices so only the image appears. -->
-              <span class="hidden-xs"><% //out.print(firstName+" "+lastName); %></span>
+              <span class="hidden-xs"><% out.print(companyName); %></span>
             </a>
             <ul class="dropdown-menu">
               <!-- The user image in the menu -->
               <li class="user-header">
-                <img src="../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                <img src="<%= path %>/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
               </li>
               <!-- Menu Footer-->
               <li class="user-footer">
                 <div class="pull-left">
-                  <a href="userProfile.jsp" class="btn btn-default btn-flat">Profile</a>
+                  <a href="<%=path %>/Company/companyProfile.jsp" class="btn btn-default btn-flat">Profile</a>
                 </div>
                 <div class="pull-right">
-                  <a href="userLogout.jsp" class="btn btn-default btn-flat">Sign out</a>
+                  <a href="User/userLogout.jsp" class="btn btn-default btn-flat">Sign out</a>
                 </div>
               </li>
             </ul>
@@ -102,10 +98,10 @@
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel">
         <div class="pull-left image">
-          <img src="../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+          <img src="<%=path %>/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
         </div>
         <div class="pull-left info">
-          <p><% //out.print(firstName+" "+lastName); %></p>
+          <p><%=companyName %></p>
           <!-- Status -->
           <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
         </div>
@@ -114,8 +110,9 @@
       <!-- Sidebar Menu -->
       <ul class="sidebar-menu" data-widget="tree">
         <!-- defferent links to access the web app -->
-        <li class="active"><a href="userHome.jsp"><i class="fa fa-link"></i> <span>Dashboard</span></a></li>
-        <li><a href="userProfile.jsp"><i class="fa fa-link"></i> <span>Profile</span></a></li>
+        <li class="active"><a href="#"><i class="fa fa-link"></i> <span>Dashboard</span></a></li>
+        <li><a href="<%=path %>/Company/companyProfile.jsp"><i class="fa fa-link"></i> <span>Profile</span></a></li>
+        <li><a href="<%=path %>/Company/companyJobPost.jsp"><i class="fa fa-link"></i> <span>Post A JOB</span></a></li>
         <li><a href="#"><i class="fa fa-link"></i> <span>Another Link</span></a></li>
         <li class="treeview">
           <a href="#"><i class="fa fa-link"></i> <span>Multilevel</span>
@@ -151,7 +148,7 @@
             <div class="icon">
               <i class="ion ion-pie-graph"></i>
             </div>
-            <a href="companyJobList.jsp" class="small-box-footer">
+            <a href="<%=path %>/Company/companyJobList.jsp" class="small-box-footer">
               More info <i class="fa fa-arrow-circle-right"></i>
             </a>
           </div>
@@ -177,9 +174,9 @@
 <!-- REQUIRED JS SCRIPTS -->
 
 <!-- jQuery 3 -->
-<script src="../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="<%= path %>/bower_components/jquery/dist/jquery.min.js"></script>
 <!-- Bootstrap 3.3.7 -->
-<script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="<%= path %>/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <!-- AdminLTE App -->
-<script src="../dist/js/adminlte.min.js"></script>
+<script src="<%= path %>/dist/js/adminlte.min.js"></script>
 </body></html>

@@ -1,10 +1,26 @@
 package com.technoforensis.skilldevelopment.model;
 
+import java.util.ArrayList;
+
 public class Job {
 	int job_id,company_id,application_fee,experience_required;
 	String job_title,job_description,start_date,last_date,job_location;
+	int skill_list[];
+	int qualification_id;
+	public int getQualification_id() {
+		return qualification_id;
+	}
+	public void setQualification_id(int qualification_id) {
+		this.qualification_id = qualification_id;
+	}
 	public int getJob_id() {
 		return job_id;
+	}
+	public int[] getSkill_list() {
+		return skill_list;
+	}
+	public void setSkill_list(int[] skill_list) {
+		this.skill_list = skill_list;
 	}
 	public void setJob_id(int job_id) {
 		this.job_id = job_id;
@@ -57,5 +73,26 @@ public class Job {
 	public void setJob_location(String job_location) {
 		this.job_location = job_location;
 	}
+	
+	
+    @Override
+	public boolean equals(Object o)
+    {
+    	if (o == this) {
+            return true;
+        }
+    	if (!(o instanceof Job)) {
+            return false;
+        }
+    	Job jb = (Job) o;
+    	
+        if (this.job_id == jb.getJob_id())
+        {
+        	return true;
+        }
+            
+
+        return false;
+    }
 	
 }

@@ -10,7 +10,9 @@ import javax.servlet.http.HttpSession;
 
 import com.technoforensis.skilldevelopment.appsecurity.HashAlgorithm;
 import com.technoforensis.skilldevelopment.database.BasicDBUtility;
+import com.technoforensis.skilldevelopment.database.CompanyDB;
 import com.technoforensis.skilldevelopment.database.UserDB;
+import com.technoforensis.skilldevelopment.model.Company;
 import com.technoforensis.skilldevelopment.model.User;
 
 /**
@@ -67,8 +69,22 @@ public class LoginServlet extends HttpServlet {
 				//This will assign a user object containing all the info of user
 				usr = database.getUserDetails(usr);
 				HttpSession session = request.getSession();
-				session.setAttribute("usr", usr);
+				session.setAttribute("user", usr);
 				response.sendRedirect("User/userHome.jsp");
+			}
+			
+			else if(role_id== 2)
+			{
+				CompanyDB database = new CompanyDB();
+				int com_id;
+				com_id = database.getCompanyID(user_name);
+				Company cmp = new Company();
+				cmp.setMobile(user_name);
+				cmp.setCompany_id(com_id);
+				cmp = database.getCompanyDetails(cmp);
+				HttpSession session = request.getSession();
+				session.setAttribute("company", cmp);
+				request.getRequestDispatcher("Company/companyHome.jsp").forward(request, response);
 			}
 			else
 			{

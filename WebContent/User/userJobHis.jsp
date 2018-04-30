@@ -7,16 +7,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-<form action="otp.jsp" method="post">
-	First name:
-	<input type="text" name="firstName"><br>
-	Last name:
-	<input type="text" name="lastName"><br>
-	Phone:
-	<input type="text" name="mobileNumber"><br>
-	Password:
-	<input type="password" name="password"><br>
-	<button type="submit">Submit</button>
-</form>
+
 </body>
 </html>

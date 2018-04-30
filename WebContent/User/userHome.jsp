@@ -1,7 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
     
-<%@ page import="com.technoforensis.skilldevelopment.model.User" %>
+<%@ page import="com.technoforensis.skilldevelopment.model.*" %>
+<%@ page import="com.technoforensis.skilldevelopment.database.*" %>
+<%@ page import= "java.util.ArrayList" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -11,14 +13,15 @@
   <title>Welcome Home</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-  <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <% String path = request.getContextPath(); %>
+  <link rel="stylesheet" href="<%=path %>/bower_components/bootstrap/dist/css/bootstrap.min.css">
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="<%=path %>/bower_components/font-awesome/css/font-awesome.min.css">
   <!-- Ionicons -->
-  <link rel="stylesheet" href="../bower_components/Ionicons/css/ionicons.min.css">
+  <link rel="stylesheet" href="<%=path %>/bower_components/Ionicons/css/ionicons.min.css">
   <!-- Theme style -->
-  <link rel="stylesheet" href="../dist/css/AdminLTE.min.css">
-  <link rel="stylesheet" href="../dist/css/skins/skin-blue.min.css">
+  <link rel="stylesheet" href="<%=path %>/dist/css/AdminLTE.min.css">
+  <link rel="stylesheet" href="<%=path %>/dist/css/skins/skin-blue.min.css">
   <!-- Google Font -->
   <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
@@ -26,17 +29,28 @@
 <% 
 	String firstName="";
 	String lastName="";
+	ArrayList<Job> job_list = new ArrayList<Job>();
+	ArrayList<Job> job_his = new ArrayList<Job>();	
+	User usr = new User();
 	try
 	{
-		User usr = (User) session.getAttribute("usr");
+		
+		usr = (User) session.getAttribute("user");
 		 firstName = usr.getFirst_name();
 		 lastName = usr.getLast_name();
 		if(lastName == null)
 		{
 			lastName ="";
 		}
+		
+		
+		BasicDBUtility bdu = new BasicDBUtility();
+		job_list = bdu.getJobList();
+		UserDB usr_database = new UserDB();
+		job_his = usr_database.getJobHis(usr);
 	}catch(Exception e)
 	{
+		System.out.println(e.toString());
 		response.sendRedirect("../index.jsp");
 	}
 	
@@ -70,14 +84,14 @@
             <!-- Menu Toggle Button -->
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <!-- The user image in the navbar-->
-              <img src="../dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
+              <img src="<%=path %>/dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
               <!-- hidden-xs hides the username on small devices so only the image appears. -->
               <span class="hidden-xs"><% out.print(firstName+" "+lastName); %></span>
             </a>
             <ul class="dropdown-menu">
               <!-- The user image in the menu -->
               <li class="user-header">
-                <img src="../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                <img src="<%=path %>/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
               </li>
               <!-- Menu Footer-->
               <li class="user-footer">
@@ -85,7 +99,7 @@
                   <a href="userProfile.jsp" class="btn btn-default btn-flat">Profile</a>
                 </div>
                 <div class="pull-right">
-                  <a href="userLogout.jsp" class="btn btn-default btn-flat">Sign out</a>
+                  <a href="<%=path %>/User/userLogout.jsp" class="btn btn-default btn-flat">Sign out</a>
                 </div>
               </li>
             </ul>
@@ -102,7 +116,7 @@
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel">
         <div class="pull-left image">
-          <img src="../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+          <img src="<%=path %>/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
         </div>
         <div class="pull-left info">
           <p><% out.print(firstName+" "+lastName); %></p>
@@ -148,69 +162,109 @@
                   <!-- timeline time label -->
                   <li class="time-label">
                         <span class="bg-red">
-                          10 Feb. 2014
+                          Job List
                         </span>
                   </li>
                   <!-- /.timeline-label -->
                   <!-- timeline item -->
                   <!-- timeline item -->
+                  <%
+                  	UserDB usr_database = new UserDB();
+                  	for(int i=job_list.size()-1; i>=0; i--)
+                  	{
+                  		Job jb = new Job();
+                  		jb = job_list.get(i);
+                  		Company cmp = new Company();
+                  		cmp.setCompany_id(jb.getCompany_id());
+                  		CompanyDB database = new CompanyDB();
+                  		cmp = database.getCompanyDetails(cmp);
+                  		ArrayList<Skill> skill_list = new ArrayList<Skill>();
+                  		skill_list = database.getSkillList(jb);
+                  %>
             <li>
               <i class="fa fa-envelope bg-blue"></i>
 
               <div class="timeline-item">
               
 
-                <h3 class="timeline-header"><a href="#">Tata Chemicals</a> Posted A Job</h3>
+                <h3 class="timeline-header"><a href="#"><%=cmp.getCompany_name() %></a> Posted A Job: <span style="color:#3c8dbc"> <%=jb.getJob_title() %></span></h3>
 
                 <div class="timeline-body">
-                  We are looking for Pump Operators / Electricians / Fitters for our storm water pumping stations located in Delhi.
+                <%=jb.getJob_description() %>
+                </br>
+                <span style="color:#3c8dbc">Experience Required</span> : <%=jb.getExperience_required() %> in Years
+                </br>
+                <span style="color:#3c8dbc">Start Date</span> : <%=jb.getStart_date() %>
+                </br>
+                <span style="color:#3c8dbc">Last Date</span> : <%=jb.getLast_date() %>
+                </br>
+                <span style="color:#3c8dbc">Application Fee</span> : <%=jb.getApplication_fee() %>
+                </br>
+                <span style="color:#3c8dbc">Job Location</span> : <%=jb.getJob_location() %>
+                </br>
+                <span style="color:#3c8dbc">Skills Required</span> : <% 
+                	for(int j=0; j<skill_list.size(); j++)
+                	{
+                		Skill sk = new Skill();
+                		sk = skill_list.get(j);
+                		out.print(sk.getSkill_title()+"  ");
+                	}
+                %>
                 </div>
-                
-                 <div class="timeline-footer">
-                  <a class="btn btn-primary btn-xs">Apply Here</a>
-                 
+                   
+                 <div class="timeline-footer"> 
+                  <% 
+                  		if(job_his.contains(jb))
+                  		{
+                  %>
+                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#<%=jb.getJob_id()%> disabled" >
+                Already Applied
+              </button>
+              	<%
+                  		}
+                  		else
+                  		{
+              	%>
+              	<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#<%=jb.getJob_id()%>" >
+                Apply Here
+              </button>
+              <%
+                  		}
+              %>
                 </div>
               </div>
             </li>
-            <!-- END timeline item -->
-            <!-- timeline item -->
-           <li>
-              <i class="fa fa-envelope bg-blue"></i>
-
-              <div class="timeline-item">
-              
-
-                <h3 class="timeline-header"><a href="#">Pidilite Ind</a> Posted A Job</h3>
-
-                <div class="timeline-body">
-                  We are looking for Pump Operators / Electricians / Fitters for our storm water pumping stations located in Delhi.
-                </div>
-                
-                 <div class="timeline-footer">
-                  <a class="btn btn-primary btn-xs">Apply Here</a>
-                 
-                </div>
+            
+  		<div class="modal modal-info fade" id="<%=jb.getJob_id()%>">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Confirm you Job Apply</h4>
               </div>
-            </li>
-          
-           <li>
-              <i class="fa fa-envelope bg-blue"></i>
-
-              <div class="timeline-item">
-              
-
-                <h3 class="timeline-header"><a href="#">UPL ltd</a> Posted A Job</h3>
-
-                <div class="timeline-body">
-                  We are looking for Pump Operators / Electricians / Fitters for our storm water pumping stations located in Delhi.
-                </div>
-                
-                 <div class="timeline-footer">
-                  <a class="btn btn-primary btn-xs">Apply Here</a>
-                 
-                </div>
+              <div class="modal-body">
+                <p>By Confirming You are agree to share your information with Company.</p>
               </div>
-            </li>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
+                <form action="<%=path %>/JobApplyServlet" method="post">
+                <input name="job_id" value="<%=jb.getJob_id()%>" type="hidden">
+                <button type="submit" class="btn btn-outline">Confirm</button>
+                </form>
+              </div>
+            </div>
+            <!-- /.modal-content -->
+          </div>
+          <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
+            
+            <%
+                  	}
+            %>
+
+
              <!-- END timeline item -->
                  <!-- timeline time label -->
                   <li class="time-label">
@@ -361,9 +415,9 @@
 <!-- REQUIRED JS SCRIPTS -->
 
 <!-- jQuery 3 -->
-<script src="../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="<%=path %>/bower_components/jquery/dist/jquery.min.js"></script>
 <!-- Bootstrap 3.3.7 -->
-<script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="<%=path %>/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <!-- AdminLTE App -->
-<script src="../dist/js/adminlte.min.js"></script>
+<script src="<%=path %>/dist/js/adminlte.min.js"></script>
 </body></html>

@@ -1,7 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
     
-<%@ page import="com.technoforensis.skilldevelopment.model.User" %>
+<%@ page import="com.technoforensis.skilldevelopment.model.*" %>
+<%@ page import="com.technoforensis.skilldevelopment.database.*" %>
+<%@ page import= "java.util.ArrayList" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -11,34 +13,39 @@
   <title>Welcome Home</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-  <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <% String path = request.getContextPath(); %>
+  <link rel="stylesheet" href="<%=path %>/bower_components/bootstrap/dist/css/bootstrap.min.css">
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="<%=path %>/bower_components/font-awesome/css/font-awesome.min.css">
   <!-- Ionicons -->
-  <link rel="stylesheet" href="../bower_components/Ionicons/css/ionicons.min.css">
+  <link rel="stylesheet" href="<%=path %>/bower_components/Ionicons/css/ionicons.min.css">
+    <!-- Select2 -->
+  <link rel="stylesheet" href="<%=path %>/bower_components/select2/dist/css/select2.min.css">
   <!-- Theme style -->
-  <link rel="stylesheet" href="../dist/css/AdminLTE.min.css">
-  <link rel="stylesheet" href="../dist/css/skins/skin-blue.min.css">
+  <link rel="stylesheet" href="<%=path %>/dist/css/AdminLTE.min.css">
+  <link rel="stylesheet" href="<%=path %>/dist/css/skins/skin-blue.min.css">
+    <!-- bootstrap datepicker -->
+  <link rel="stylesheet" href="<%=path %>/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
   <!-- Google Font -->
   <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
 <% 
-	/*String firstName="";
-	String lastName="";
+	String companyName="";
+	Company cmp = new Company();
+	ArrayList<Skill> skill_list = new ArrayList<Skill>();
+	ArrayList<Qualification> q_list = new ArrayList<Qualification>();
 	try
 	{
-		User usr = (User) session.getAttribute("usr");
-		 firstName = usr.getFirst_name();
-		 lastName = usr.getLast_name();
-		if(lastName == null)
-		{
-			lastName ="";
-		}
-	}catch(Exception e)
+		cmp = (Company) session.getAttribute("company");
+		companyName = cmp.getCompany_name();		
+		BasicDBUtility bdu = new BasicDBUtility();
+		skill_list = bdu.getSkillListForJob();
+		q_list = bdu.getQualificationList();
+	}catch(Exception e) 
 	{
-		response.sendRedirect("../index.jsp");
-	}*/
+		response.sendRedirect(path+"/index.jsp");
+	}
 	
 %>
 <body class="hold-transition skin-blue sidebar-mini">
@@ -70,14 +77,14 @@
             <!-- Menu Toggle Button -->
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <!-- The user image in the navbar-->
-              <img src="../dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
+              <img src="<%= path %>/dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
               <!-- hidden-xs hides the username on small devices so only the image appears. -->
-              <span class="hidden-xs"><% //out.print(firstName+" "+lastName); %></span>
+              <span class="hidden-xs"><% out.print(companyName); %></span>
             </a>
             <ul class="dropdown-menu">
               <!-- The user image in the menu -->
               <li class="user-header">
-                <img src="../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                <img src="<%= path %>/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
               </li>
               <!-- Menu Footer-->
               <li class="user-footer">
@@ -85,7 +92,7 @@
                   <a href="userProfile.jsp" class="btn btn-default btn-flat">Profile</a>
                 </div>
                 <div class="pull-right">
-                  <a href="userLogout.jsp" class="btn btn-default btn-flat">Sign out</a>
+                  <a href="User/userLogout.jsp" class="btn btn-default btn-flat">Sign out</a>
                 </div>
               </li>
             </ul>
@@ -102,10 +109,10 @@
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel">
         <div class="pull-left image">
-          <img src="../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+          <img src="<%=path %>/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
         </div>
         <div class="pull-left info">
-          <p><% //out.print(firstName+" "+lastName); %></p>
+          <p><%=companyName %></p>
           <!-- Status -->
           <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
         </div>
@@ -114,8 +121,9 @@
       <!-- Sidebar Menu -->
       <ul class="sidebar-menu" data-widget="tree">
         <!-- defferent links to access the web app -->
-        <li class="active"><a href="userHome.jsp"><i class="fa fa-link"></i> <span>Dashboard</span></a></li>
-        <li><a href="userProfile.jsp"><i class="fa fa-link"></i> <span>Profile</span></a></li>
+        <li class="active"><a href="companyHome.jsp"><i class="fa fa-link"></i> <span>Dashboard</span></a></li>
+        <li><a href="companyProfile.jsp"><i class="fa fa-link"></i> <span>Profile</span></a></li>
+        <li><a href="#"><i class="fa fa-link"></i> <span>Post A JOB</span></a></li>
         <li><a href="#"><i class="fa fa-link"></i> <span>Another Link</span></a></li>
         <li class="treeview">
           <a href="#"><i class="fa fa-link"></i> <span>Multilevel</span>
@@ -148,11 +156,85 @@
             </div>
             <!-- /.box-header -->
             <!-- form start -->
-            <form role="form">
+            <form role="form" action="<%=path %>/JobPostServlet" method="post">
               <div class="box-body">
                 <div class="form-group">
                   <label>Job Title</label>
-                  <input type="jobTitle" class="form-control" placeholder="Job Title">
+                  <input type="text" name="jobTitle" class="form-control" placeholder="Job Title">
+                </div>
+                <div class="form-group">
+                  <label>Job Description</label>
+                  <textarea  name="jobDescription" class="form-control" placeholder="Job Description"></textarea>
+                </div>
+                <div class="form-group">
+                  <label>Experience</label>
+                  <input type="text" name="experience_required" class="form-control" placeholder="Experience Required in Years">
+                </div>
+                <div class="form-group">
+                  <label>Application Fee</label>
+                  <input type="text" name="application_fee" class="form-control" placeholder="Application Fee">
+                </div>
+                <div class="form-group">
+                <label>Job Location</label>
+                <select class="form-control select2" name="job_location" style="width: 100%;" >
+                  <option value="Guwahati">Guwahati</option>
+                  <option value="Kolkata">Kolkata</option>
+                  <option value="New Delhi">New Delhi</option>
+                  <option value="Bengaluru">Bengaluru</option>
+                  <option value="Tezpur">Tezpur</option>
+                  <option value="Jorhat">Jorhat</option>
+                  <option value="Shillong">Shillong</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Minimum Qualification</label>
+                <select  name="qualification" class="form-control select2"  data-placeholder="Minimum Qualification Required for the Job"
+                        style="width: 100%;">
+                  <%
+                  		for(int i=0; i<q_list.size(); i++)
+                  		{
+                  			Qualification qua = new Qualification();
+                  			qua = q_list.get(i);
+                  			out.print("<option value="+qua.getQualification_id()+">"+qua.getQualification()+"</option>");
+                  		}
+                  %>
+                  
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Skills Required</label>
+                <select  name="skill_list" class="form-control select2" multiple="multiple" data-placeholder="Select Skills Required for the Job"
+                        style="width: 100%;">
+                  <%
+                  		for(int i=0; i<skill_list.size(); i++)
+                  		{
+                  			Skill sk = new Skill();
+                  			sk = skill_list.get(i);
+                  			out.print("<option value="+sk.getSkill_id()+">"+sk.getSkill_title()+"</option>");
+                  		}
+                  %>
+                  
+                </select>
+              </div>
+                <div class="form-group">
+                  <label>Start Date</label>
+                <div class="input-group date">
+                  <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </div>
+                  <input type="text" class="form-control pull-right" id="startDate" name="start_date">
+                </div>
+              </div>
+              <div class="form-group">
+                  <label>Last Date</label>
+                <div class="input-group date">
+                  <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </div>
+                  <input type="text" class="form-control pull-right" id="lastDate" name="last_date">
+                </div>
+              </div>
+                
                 </div>
               <!-- /.box-body -->
 
@@ -183,9 +265,23 @@
 <!-- REQUIRED JS SCRIPTS -->
 
 <!-- jQuery 3 -->
-<script src="../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="<%=path %>/bower_components/jquery/dist/jquery.min.js"></script>
 <!-- Bootstrap 3.3.7 -->
-<script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="<%=path %>/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <!-- AdminLTE App -->
-<script src="../dist/js/adminlte.min.js"></script>
+<script src="<%=path %>/dist/js/adminlte.min.js"></script>
+<!-- bootstrap datepicker -->
+<script src="<%=path %>/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+<!-- Select2 -->
+<script src="<%=path %>/bower_components/select2/dist/js/select2.full.min.js"></script>
+<script>
+//Date picker
+$('#startDate').datepicker({
+  autoclose: true
+})
+$('#lastDate').datepicker({
+  autoclose: true
+})
+    $('.select2').select2()
+</script>
 </body></html>

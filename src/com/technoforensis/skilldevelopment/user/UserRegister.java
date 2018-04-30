@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.technoforensis.skilldevelopment.appsecurity.HashAlgorithm;
+import com.technoforensis.skilldevelopment.database.BasicDBUtility;
 import com.technoforensis.skilldevelopment.database.UserDB;
 import com.technoforensis.skilldevelopment.model.User;
 
@@ -50,21 +51,37 @@ public class UserRegister extends HttpServlet {
 		String hashCode = hash_algo.createHash(password);
 		out.println(hashCode);
 		
-		//test
-				
+		BasicDBUtility dbu = new BasicDBUtility();
+		if(dbu.checkMember(mobileNumber))
+		{
+			request.getRequestDispatcher("existingMember.jsp").forward(request, response);
+		}
+						
 		if(sub_otp == gen_otp)
 		{
-			out.println(firstName);
-			out.println(lastName);
-			out.println(mobileNumber);
-			out.println(password);
+			if(dbu.checkMember(mobileNumber))
+			{
+				request.getRequestDispatcher("existingMember.jsp").forward(request, response);
+			}
 			User usr = new User();
 			usr.setFirst_name(firstName);
 			usr.setLast_name(lastName);
 			usr.setMobile(mobileNumber);
 			UserDB dataBase = new UserDB();
 			//Store in Database
-			dataBase.newRegister(usr, hashCode);			
+			dataBase.newRegister(usr, hashCode);
+			session.setAttribute("user", usr);
+			request.getRequestDispatcher("User/userHome.jsp").forward(request, response);
+			
+		}
+		else
+		{
+			User usr = new User();
+			usr.setFirst_name(firstName);
+			usr.setLast_name(lastName);
+			usr.setMobile(mobileNumber);
+			session.setAttribute("user", usr);
+			request.getRequestDispatcher("errorUserOTP.jsp").forward(request, response);
 		}
 		
 	}
