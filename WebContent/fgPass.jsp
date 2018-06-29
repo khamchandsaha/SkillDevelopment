@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ page import="com.technoforensis.skilldevelopment.utility.*" %>
-<%@ page import="com.technoforensis.skilldevelopment.database.*" %>
+<%@ page import="com.technoforensis.skilldevelopment.model.User" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -33,28 +33,6 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
 <body>
-<%
-	String mobileNumber=request.getParameter("mobileNumber");
-
-	try{
-		if(mobileNumber == null)
-			mobileNumber = (String) session.getAttribute("mobileNumber");
-
-	
-	OTP_Gen otp_gen = new OTP_Gen();
-	int otp = otp_gen.gen_otp();
-	
-	session.setAttribute("generated_otp", otp);
-	SMSSender1 sms = new SMSSender1();
-	String msg;
-	msg = "Your OTP for reset password is: "+otp;
-	String result = sms.sendSms(mobileNumber, msg);
-	session.setAttribute("sms_result", result);
-	}
-	catch (Exception e){
-		response.sendRedirect("index.jsp");
-	}
-%>
 
 <div class="register-box">
   <div class="register-logo">
@@ -62,26 +40,14 @@
   </div>
 
   <div class="register-box-body">
-    <p class="login-box-msg">Please Enter the OTP you received in your Mobile Number to Reset Your Password</p>
-
-    <form action="ForgotPasswordServlet" method="post">
+    <p class="login-box-msg">Enter your mobile number</p>
+    <form action="forgotPassword.jsp" method="post">
       <div class="form-group has-feedback">
-        <label class="form-control">+91<%=mobileNumber %>
+        <input class="form-control" type="text" name="mobileNumber">
         <span class="glyphicon glyphicon-phone form-control-feedback"></span></label>
       </div>
-      <div class="form-group has-feedback">
-        <input type="text" class="form-control" placeholder="Enter the OTP" name="submited_otp">
-        <span class="glyphicon glyphicon-user form-control-feedback"></span>
-      </div>
-      <div class="form-group has-feedback">
-        <input type="password" class="form-control" placeholder="Enter the new Password" name="password">
-        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-      </div>
-      <div class="form-group has-feedback">
-        <input type="password" class="form-control" placeholder="Retype Password">
-        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-      </div>
-         <button type="submit" class="btn btn-primary btn-block btn-flat">Submit</button>
+      
+         <button type="submit" class="btn btn-primary btn-block btn-flat">Forgot Password</button>
     </form>
 </body>
 </html>

@@ -81,7 +81,7 @@
                   <a href="<%=path %>/Company/companyProfile.jsp" class="btn btn-default btn-flat">Profile</a>
                 </div>
                 <div class="pull-right">
-                  <a href="User/userLogout.jsp" class="btn btn-default btn-flat">Sign out</a>
+                  <a href="<%=path %>/User/userLogout.jsp" class="btn btn-default btn-flat">Sign out</a>
                 </div>
               </li>
             </ul>

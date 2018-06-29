@@ -4,10 +4,11 @@
 <html>
 <head>
 <meta charset="utf-8" />
+<% String path = request.getContextPath(); %>
 <title>Welcome to Chemical and Petrochemical Portal</title>
-	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="css/base_css.css">
-	<script type="text/javascript" src="javascript/bootstrap.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="<%=path %>/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="<%=path %>/css/base_css.css">
+	<script type="text/javascript" src="<%=path %>/javascript/bootstrap.min.js"></script>
 
 </head>
 <body class="container">
@@ -43,7 +44,7 @@
 <div class="container">
 <div class="row">
 <!--login form -->
- <form class="col-sm-2 col-lg-2 col-md-2" action="LoginServlet" method="post">
+ <form class="col-sm-2 col-lg-2 col-md-2" action="<%=path %>/LoginServlet" method="post">
   <div class="form-group">
     <label for="user_name">Username:</label>
     <input type="text" id="user_name" name="user_name" class="form-control">
@@ -55,8 +56,8 @@
   <button id="sbt" type="submit" class="btn btn-default">Submit</button>
   <!--for creating a new account -->
 
-  <p class="text-right"><a href="#">forgot password?</a></p>
-  <button type="submit" class="btn btn-default"><a href="sign_up.html">Create a new account</a></button>
+  <p class="text-right"><a href="fgPass.jsp">forgot password?</a></p>
+ <a href="selectMemberType.jsp" class="btn btn-primary btn-default active" role="button">Create a new account</a>
 </form>
 <!--end of login form-->
 <!--start of advertizement block-->

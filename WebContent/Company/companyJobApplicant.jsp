@@ -23,31 +23,27 @@
   <!-- Theme style -->
   <link rel="stylesheet" href="<%=path %>/dist/css/AdminLTE.min.css">
   <link rel="stylesheet" href="<%=path %>/dist/css/skins/skin-blue.min.css">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="<%=path %>/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
   <!-- Google Font -->
   <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
 <% 
-	String firstName="";
-	String lastName="";
-	ArrayList<Job> job_his = new ArrayList<Job>();	
-	User usr = new User();
+	String companyName="";
+	Company cmp = new Company();
+	ArrayList<User> usr_list = new ArrayList<User>();
 	try
 	{
-		
-		usr = (User) session.getAttribute("user");
-		 firstName = usr.getFirst_name();
-		 lastName = usr.getLast_name();
-		if(lastName == null)
-		{
-			lastName ="";
-		}
-		UserDB usr_database = new UserDB();
-		job_his = usr_database.getJobHis(usr);
+		cmp = (Company) session.getAttribute("company");
+		companyName = cmp.getCompany_name();
+		CompanyDB cmp_database = new CompanyDB();
+		int job_id;
+		job_id = Integer.parseInt(request.getParameter("job_id"));
+		usr_list = cmp_database.getApplicantListForAJob(job_id);
 	}catch(Exception e)
 	{
-		System.out.println(e.toString());
-		response.sendRedirect("../index.jsp");
+		response.sendRedirect(path+"/index.jsp");
 	}
 	
 %>
@@ -58,7 +54,7 @@
   <header class="main-header">
 
     <!-- Logo -->
-    <a href="index2.html" class="logo">
+    <a href="<%=path %>/index.jsp" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
       <span class="logo-mini"><b>T</b>F</span>
       <!-- logo for regular state and mobile devices -->
@@ -82,7 +78,7 @@
               <!-- The user image in the navbar-->
               <img src="<%=path %>/dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
               <!-- hidden-xs hides the username on small devices so only the image appears. -->
-              <span class="hidden-xs"><% out.print(firstName+" "+lastName); %></span>
+              <span class="hidden-xs"><% //out.print(firstName+" "+lastName); %></span>
             </a>
             <ul class="dropdown-menu">
               <!-- The user image in the menu -->
@@ -92,7 +88,7 @@
               <!-- Menu Footer-->
               <li class="user-footer">
                 <div class="pull-left">
-                  <a href="userProfile.jsp" class="btn btn-default btn-flat">Profile</a>
+                  <a href="<%=path %>/Company/companyProfile.jsp" class="btn btn-default btn-flat">Profile</a>
                 </div>
                 <div class="pull-right">
                   <a href="<%=path %>/User/userLogout.jsp" class="btn btn-default btn-flat">Sign out</a>
@@ -115,7 +111,7 @@
           <img src="<%=path %>/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
         </div>
         <div class="pull-left info">
-          <p><% out.print(firstName+" "+lastName); %></p>
+          <p><% //out.print(firstName+" "+lastName); %></p>
           <!-- Status -->
           <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
         </div>
@@ -125,7 +121,8 @@
       <ul class="sidebar-menu" data-widget="tree">
         <!-- defferent links to access the web app -->
         <li class="active"><a href="userHome.jsp"><i class="fa fa-link"></i> <span>Dashboard</span></a></li>
-        <li><a href="userProfile.jsp"><i class="fa fa-link"></i> <span>Profile</span></a></li>
+        <li><a href="<%=path %>/Company/companyProfile.jsp"><i class="fa fa-link"></i> <span>Profile</span></a></li>
+        <li><a href="<%=path %>/Company/companyJobPost.jsp"><i class="fa fa-link"></i> <span>Post a Job</span></a></li>
         <li><a href="#"><i class="fa fa-link"></i> <span>Another Link</span></a></li>
         <li class="treeview">
           <a href="#"><i class="fa fa-link"></i> <span>Multilevel</span>
@@ -149,51 +146,48 @@
 
     <!-- Main content -->
     <section class="content container-fluid">
-
-	     <div class="row">
-        <div class="col-xs-12">
-          <div class="box">
+    
+	<div class="box">
             <div class="box-header">
-              <h3 class="box-title">Your Job History</h3>
+              <h3 class="box-title">Job Applicants</h3>
             </div>
             <!-- /.box-header -->
-            <div class="box-body table-responsive no-padding">
-              <table class="table table-hover">
+            <div class="box-body">
+              <table id="example1" class="table table-bordered table-striped">
+                <thead>
                 <tr>
-                  <th>JOB TITLE</th>
-                  <th>COMPANY</th>
-                  <th>DATE</th>
-                  <th>STATUS</th>
+                  <th>Applicant Name</th>
+                  <th>Experience in Years</th>
+                  <th>Qualification</th>
+                  <th>Contact Number</th>
+                  <th>Resume</th>                  
                 </tr>
+                </thead>
+                <tbody>
                 <%
-                	for(int i=0; i<job_his.size(); i++)
-                	{
-                		Job jb = new Job();
-                		jb = job_his.get(i);
-                		Company cmp = new Company();
-                  		cmp.setCompany_id(jb.getCompany_id());
-                  		CompanyDB database = new CompanyDB();
-                  		cmp = database.getCompanyDetails(cmp);
-                  		BasicDBUtility bdu = new BasicDBUtility();
-                  		Date date = bdu.getJobApplyDate(usr.getUser_id(), jb.getJob_id());
-                  		
+                for(int i=0; i<usr_list.size(); i++)
+                { 
+                	User usr = new User();
+                	usr = usr_list.get(i);
                 %>
+                
                 <tr>
-                  <td><%=jb.getJob_title()%></td>
-                  <td><%=cmp.getCompany_name() %></td>
-                  <td><%=date%></td>
-                  <td><span class="label label-success">Approved</span></td>
-                </tr>
-                <%
-                	}
-                %>
+                <td><%=usr.getFirst_name()+" "+usr.getLast_name() %></td>
+                <td><%=usr.getYear_of_experience() %></td>
+                <td><%=usr.getQualification() %></td>
+                <td><%=usr.getMobile() %></td>
+                <td><%=usr.getResume_url() %></td>
+              </tr>
+              <%    
+                } 
+               %>
+
+                </tbody>
               </table>
             </div>
             <!-- /.box-body -->
           </div>
           <!-- /.box -->
-        </div>
-      </div>
     </section>
     <!-- /.content -->
   </div>
@@ -219,9 +213,24 @@
 <script src="<%=path %>/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <!-- AdminLTE App -->
 <script src="<%=path %>/dist/js/adminlte.min.js"></script>
-<!-- Slimscroll -->
+<script>
+  $(function () {
+    $('#example1').DataTable()
+    $('#example2').DataTable({
+      'paging'      : true,
+      'lengthChange': true,
+      'searching'   : false,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : true
+    })
+  })
+</script>
+<!-- DataTables -->
+<script src="<%=path %>/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="<%=path %>/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<!-- SlimScroll -->
 <script src="<%=path %>/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
 <!-- FastClick -->
 <script src="<%=path %>/bower_components/fastclick/lib/fastclick.js"></script>
-</body>
-</html>
+</body></html>

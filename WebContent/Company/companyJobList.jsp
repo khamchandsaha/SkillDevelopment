@@ -1,7 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
     
-<%@ page import="com.technoforensis.skilldevelopment.model.User" %>
+<%@ page import="com.technoforensis.skilldevelopment.model.*" %>
+<%@ page import="com.technoforensis.skilldevelopment.database.*" %>
+<%@ page import= "java.util.ArrayList" %>
+<%@ page import= "java.sql.Date" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -27,21 +30,19 @@
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
 <% 
-	/*String firstName="";
-	String lastName="";
+	String companyName="";
+	Company cmp = new Company();
+	ArrayList<Job> job_list = new ArrayList<Job>();
 	try
 	{
-		User usr = (User) session.getAttribute("usr");
-		 firstName = usr.getFirst_name();
-		 lastName = usr.getLast_name();
-		if(lastName == null)
-		{
-			lastName ="";
-		}
+		cmp = (Company) session.getAttribute("company");
+		companyName = cmp.getCompany_name();
+		CompanyDB cmp_database = new CompanyDB();
+		job_list = cmp_database.getJobList(cmp);
 	}catch(Exception e)
 	{
-		response.sendRedirect("../index.jsp");
-	}*/
+		response.sendRedirect(path+"/index.jsp");
+	}
 	
 %>
 <body class="hold-transition skin-blue sidebar-mini">
@@ -88,7 +89,7 @@
                   <a href="<%=path %>/Company/companyProfile.jsp" class="btn btn-default btn-flat">Profile</a>
                 </div>
                 <div class="pull-right">
-                  <a href="User/userLogout.jsp" class="btn btn-default btn-flat">Sign out</a>
+                  <a href="<%=path %>/User/userLogout.jsp" class="btn btn-default btn-flat">Sign out</a>
                 </div>
               </li>
             </ul>
@@ -153,76 +154,39 @@
               <table id="example1" class="table table-bordered table-striped">
                 <thead>
                 <tr>
-                  <th>Applicant Name</th>
-                  <th>Experience in Years</th>
-                  <th>Qualification</th>
-                  <th>Contact Number</th>
-                  <th>Resume</th>                  
+                  <th>Job ID</th>
+                  <th>Job Title</th>
+                  <th>Start Date</th>
+                  <th>Last Date</th>
+                  <th>View Applicants</th>                  
                 </tr>
                 </thead>
                 <tbody>
                 <%
-                for(int i=0; i<100; i++)
-                { %>
+                for(int i=job_list.size()-1; i>=0; i--)
+                { 
+                	Job jb = new Job();
+                	jb = job_list.get(i);
+                %>
                 
                 <tr>
-                <td>Trident</td>
-                <td>Internet
-                  Explorer 4.0
+                <td><%=jb.getJob_id() %></td>
+                <td><%=jb.getJob_title() %>
                 </td>
-                <td>Win 95+</td>
-                <td> 4</td>
-                <td>X</td>
+                <td><%=jb.getStart_date() %></td>
+                <td><%=jb.getLast_date() %></td>
+                <td>
+                <form action="companyJobApplicant.jsp" method="post">
+                <input type="hidden" name="job_id" value="<%=jb.getJob_id()%>">
+                <button class="btn btn-primary">View Applicants</button>
+                </form>               
+                </td>
               </tr>
               <%    
                 } 
                %>
                 
-                <tr>
-                  <td>Trident</td>
-                  <td>Internet
-                    Explorer 4.0
-                  </td>
-                  <td>Win 95+</td>
-                  <td> 4</td>
-                  <td>X</td>
-                </tr>
-                <tr>
-                  <td>Trident</td>
-                  <td>Internet
-                    Explorer 5.0
-                  </td>
-                  <td>Win 95+</td>
-                  <td>5</td>
-                  <td>C</td>
-                </tr>
-                <tr>
-                  <td>Trident</td>
-                  <td>Internet
-                    Explorer 5.5
-                  </td>
-                  <td>Win 95+</td>
-                  <td>5.5</td>
-                  <td>A</td>
-                </tr>
-                <tr>
-                  
-                  <td>Gecko</td>
-                  <td>Netscape Navigator 9</td>
-                  <td>Win 98+ / OSX.2+</td>
-                  <td>1.8</td>
-                  <td>A</td>
-                </tr>
-                
-                <tr>
-                  <td>Gecko</td>
-                  <td>Mozilla 1.0</td>
-                  <td>Win 95+ / OSX.1+</td>
-                  <td>1</td>
-                  <td>A</td>
-                </tr>
-                
-                </tfoot>
+                </tbody>
               </table>
             </div>
             <!-- /.box-body -->

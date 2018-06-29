@@ -56,7 +56,7 @@
   <button id="sbt" type="submit" class="btn btn-default">Submit</button>
   <!--for creating a new account -->
 
-  <p class="text-right"><a href="#">forgot password?</a></p>
+  <p class="text-right"><a href="fgPass.jsp">forgot password?</a></p>
   <button type="submit" class="btn btn-default"><a href="sign_up.html">Create a new account</a></button>
 </form>
 <!--end of login form-->

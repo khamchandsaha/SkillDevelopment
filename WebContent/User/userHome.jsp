@@ -129,7 +129,8 @@
       <ul class="sidebar-menu" data-widget="tree">
         <!-- defferent links to access the web app -->
         <li class="active"><a href="userHome.jsp"><i class="fa fa-link"></i> <span>Dashboard</span></a></li>
-        <li><a href="userProfile.jsp"><i class="fa fa-link"></i> <span>Profile</span></a></li>
+        <li><a href="<%=path %>/User/userProfile.jsp"><i class="fa fa-link"></i> <span>Profile</span></a></li>
+        <li><a href="<%=path %>/User/userJobHis.jsp"><i class="fa fa-link"></i> <span>Job History</span></a></li>
         <li><a href="#"><i class="fa fa-link"></i> <span>Another Link</span></a></li>
         <li class="treeview">
           <a href="#"><i class="fa fa-link"></i> <span>Multilevel</span>
@@ -420,4 +421,6 @@
 <script src="<%=path %>/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <!-- AdminLTE App -->
 <script src="<%=path %>/dist/js/adminlte.min.js"></script>
-</body></html>
+
+</body>
+</html>

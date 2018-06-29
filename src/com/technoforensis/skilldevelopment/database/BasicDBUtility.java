@@ -214,4 +214,30 @@ public class BasicDBUtility {
 		}
 	}
 	
+	/**
+	 * @param user_id
+	 * @param job_id
+	 * @return the date of Apply of Job
+	 */
+	public Date getJobApplyDate(int user_id, int job_id)
+	{
+		Date date = null;
+		try 
+		{
+			Connection conn = DBConnection.getConnection();
+			PreparedStatement pstm = (PreparedStatement) conn.prepareStatement("SELECT * FROM job_applicants WHERE job_id =? and user_id=?");
+			pstm.setInt(1, job_id);
+			pstm.setInt(2, user_id);
+			ResultSet rs = pstm.executeQuery();
+			while(rs.next())
+			{
+				date = rs.getDate("date_of_apply");
+			}
+		}catch(Exception e)
+		{
+			System.out.println("error in basicDB.getjobapllydate: "+e.toString());
+		}
+		return date;
+	}
+	
 }

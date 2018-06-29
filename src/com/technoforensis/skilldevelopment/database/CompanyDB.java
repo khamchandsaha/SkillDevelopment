@@ -234,6 +234,7 @@ public class CompanyDB {
 					usr.setQualification(rs1.getInt("qualification"));
 					usr.setProfile_percentage(rs1.getInt("profile_percentage"));
 					usr.setShare_with_company(rs1.getInt("share_with_company"));
+					usr.setMobile(rs1.getString("mobile"));
 					usrList.add(usr);
 
 				}
@@ -312,6 +313,52 @@ public class CompanyDB {
 			System.out.println("error in CompanyDB.getJobDetails"+e.getMessage());
 		}
 		return jb;
+	}
+	
+	/**
+	 * @param cmp
+	 * @return the list of jobs posted by the company
+	 */
+	public ArrayList<Job> getJobList(Company cmp)
+	{
+		ArrayList<Job> job_list = new ArrayList<Job>();
+		try {
+			Connection conn = DBConnection.getConnection();
+			PreparedStatement pstm = (PreparedStatement) conn.prepareStatement("SELECT * FROM job_list where company_id=?");
+			pstm.setInt(1, cmp.getCompany_id());
+			ResultSet rs = pstm.executeQuery();
+			while(rs.next())
+			{
+				Job jb = new Job();
+				jb.setJob_id(rs.getInt("job_id"));
+				jb.setApplication_fee(rs.getInt("application_fee"));
+				jb.setCompany_id(rs.getInt("company_id"));
+				jb.setExperience_required(rs.getInt("experience_required"));
+				jb.setJob_description(rs.getString("job_description"));
+				jb.setJob_id(rs.getInt("job_id"));
+				jb.setJob_location(rs.getString("job_location"));
+				jb.setJob_title(rs.getString("job_title"));
+				jb.setLast_date(rs.getDate("last_date").toString());
+				jb.setQualification_id(rs.getInt("qualification_id"));
+				jb.setStart_date(rs.getDate("start_date").toString());
+				PreparedStatement pstm1 = (PreparedStatement) conn.prepareStatement("SELECT * FROM job_skills where job_id=?");
+				pstm1.setInt(1, jb.getJob_id());
+				ResultSet rs1 = pstm1.executeQuery();
+				int skill_list_ids[] = new int[20];
+				int k=0;
+				while(rs1.next())
+				{
+					skill_list_ids[k]=rs1.getInt("job_skills");
+					k++;
+				}
+				jb.setSkill_list(skill_list_ids);
+				job_list.add(jb);
+			}
+		}catch(Exception e)
+		{
+			System.out.println("error in CompanyDB.getJobList"+e.toString());
+		}
+			return job_list;
 	}
 
 }

@@ -1,7 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
     
-<%@ page import="com.technoforensis.skilldevelopment.model.User" %>
+<%@ page import="com.technoforensis.skilldevelopment.model.*" %>
+<%@ page import="com.technoforensis.skilldevelopment.database.*" %>
+<%@ page import= "java.util.ArrayList" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -20,6 +22,10 @@
   <!-- Theme style -->
   <link rel="stylesheet" href="<%=path %>/dist/css/AdminLTE.min.css">
   <link rel="stylesheet" href="<%=path %>/dist/css/skins/skin-blue.min.css">
+  <!-- Select2 -->
+  <link rel="stylesheet" href="<%=path %>/bower_components/select2/dist/css/select2.min.css">
+  <!-- bootstrap datepicker -->
+  <link rel="stylesheet" href="<%=path %>/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
   <!-- Google Font -->
   <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
@@ -27,15 +33,21 @@
 <% 
 	String firstName="";
 	String lastName="";
+	User usr = new User();
+	ArrayList<Qualification> q_list = new ArrayList<Qualification>();
+	ArrayList<Skill> skill_list = new ArrayList<Skill>();
 	try
 	{
-		User usr = (User) session.getAttribute("usr");
-		 firstName = usr.getFirst_name();
-		 lastName = usr.getLast_name();
+		usr = (User) session.getAttribute("user");
+		firstName = usr.getFirst_name();
+		lastName = usr.getLast_name();
 		if(lastName == null)
 		{
 			lastName ="";
 		}
+		BasicDBUtility bdu = new BasicDBUtility();
+		q_list = bdu.getQualificationList();
+		skill_list = bdu.getSkillListForJob();
 	}catch(Exception e)
 	{
 		request.getRequestDispatcher("../index.jsp").forward(request, response);
@@ -71,14 +83,14 @@
             <!-- Menu Toggle Button -->
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <!-- The user image in the navbar-->
-              <img src="<%=path %>/dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
+              <img src="<%=path+"/File/User/Profile/"+usr.getUser_id()+"_profile_pic.jpg" %>" class="user-image" alt="User Image">
               <!-- hidden-xs hides the username on small devices so only the image appears. -->
               <span class="hidden-xs"><% out.print(firstName+" "+lastName); %></span>
             </a>
             <ul class="dropdown-menu">
               <!-- The user image in the menu -->
               <li class="user-header">
-                <img src="<%=path %>/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                <img src="<%=path+"/File/User/Profile/"+usr.getUser_id()+"_profile_pic.jpg" %>" class="img-circle" alt="User Image">
               </li>
               <!-- Menu Footer-->
               <li class="user-footer">
@@ -103,7 +115,7 @@
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel">
         <div class="pull-left image">
-          <img src="<%=path %>/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+          <img src="/File/User/Profile/uday.jpg" class="img-circle" alt="User Image">
         </div>
         <div class="pull-left info">
           <p><% out.print(firstName+" "+lastName); %></p>
@@ -146,8 +158,12 @@
     			<!-- Profile Image -->
           <div class="box box-primary">
             <div class="box-body box-profile">
-              <img class="profile-user-img img-responsive img-circle" src="<%=path %>/dist/img/user4-128x128.jpg" alt="User profile picture">
-
+              <img class="profile-user-img img-responsive img-circle" src="<%=path+"/File/User/Profile/"+usr.getUser_id()+"_profile_pic.jpg" %>" alt="User profile picture">
+				<form action="<%=path %>/UserProfileImgServlet" method="post" enctype="multipart/form-data">
+				Change Profile Image
+				<input type="file" name="img">
+				<button type="submit" class="btn btn-primary">Submit</button>
+				</form>
               <h3 class="profile-username text-center"><% out.print(firstName+" "+lastName); %></h3>
             </div>
             </div> <!-- column end here -->
@@ -157,7 +173,7 @@
           <!-- Starting of form information -->
           <div class="row">
           <div class="col-lg-offset-3 col-lg-5">
-                <form class="form-horizontal">
+                <form class="form-horizontal" action="UserProfileUpdateServlet" method="post">
                   <div class="form-group">
                     <label name="firstName" class="col-sm-2 control-label">First Name</label>
 
@@ -173,42 +189,87 @@
                     </div>
                   </div>
                   <div class="form-group">
+                    <label name="mobile" class="col-sm-2 control-label">Mobile</label>
+
+                    <div class="col-sm-10">
+                      <input type="email" class="form-control" id="email" value="<%=usr.getMobile() %>" disabled>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                  	<label class="col-sm-2 control-label">Date of Birth</label>
+                	<div class="input-group date col-sm-10">
+                  		<div class="input-group-addon">
+                    		<i class="fa fa-calendar"></i>
+                  		</div>
+                  		<input type="text" class="form-control" id="date_of_birth" name="date_of_birth"  placeholder="<%=usr.getDob() %>">
+                	</div>
+              		</div>
+                  <div class="form-group">
                     <label name="email" class="col-sm-2 control-label">Email</label>
 
                     <div class="col-sm-10">
-                      <input type="email" class="form-control" id="email" value="<% out.print(firstName); %>">
+                      <input type="email" class="form-control" id="email" value="<%=usr.getEmail() %>">
                     </div>
                   </div>
                   <div class="form-group">
-                    <label for="inputName" class="col-sm-2 control-label">Name</label>
+                <label for="qualification" class="col-sm-2 control-label" name="qualification">Highest Qualification</label>
+                <div class="col-sm-10">
+                <select  name="qualification" class="form-control select2" style="width: 100%;">
+                  <%
+                  		for(int i=0; i<q_list.size(); i++)
+                  		{
+                  			Qualification qua = new Qualification();
+                  			qua = q_list.get(i);
+                  			out.print("<option value="+qua.getQualification_id()+">"+qua.getQualification()+"</option>");
+                  		}
+                  %>
+                  
+                </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" name="skills">Skills</label>
+                <div class="col-sm-10">
+                <select  name="skill_list" class="form-control select2" multiple="multiple" data-placeholder="<%="skills you posses" %>"
+                        style="width: 100%;">
+                  <%
+                  		for(int i=0; i<skill_list.size(); i++)
+                  		{
+                  			Skill sk = new Skill();
+                  			sk = skill_list.get(i);
+                  			out.print("<option value="+sk.getSkill_id()+">"+sk.getSkill_title()+"</option>");
+                  		}
+                  %>
+                  
+                </select>
+                </div>
+              </div>
+                  
+                  <div class="form-group">
+                    <label for="address" class="col-sm-2 control-label">Address</label>
 
                     <div class="col-sm-10">
-                      <input type="text" class="form-control" id="inputName" placeholder="Name">
+                      <textarea class="form-control" id="inputExperience" placeholder="<%=usr.getAddress() %>" name="Address"></textarea>
                     </div>
                   </div>
-                  <div class="form-group">
-                    <label for="inputExperience" class="col-sm-2 control-label">Experience</label>
+                  <div class="col-sm-2">
+                  </div>
+                  <div class="form-group col-sm-10">
+                  Share your profile information with other companies.
+                  <div class="radio">
+                    <label>
+                      <input type="radio" name="optionsRadios" id="optionsRadios1" value="no" checked>
+                      No
+                    </label>
+                  </div>
+                  <div class="radio">
+                    <label>
+                      <input type="radio" name="optionsRadios" id="optionsRadios2" value="yes">
+                      Yes
+                    </label>
+                  </div>
+                </div>
 
-                    <div class="col-sm-10">
-                      <textarea class="form-control" id="inputExperience" placeholder="Experience"></textarea>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label for="inputSkills" class="col-sm-2 control-label">Skills</label>
-
-                    <div class="col-sm-10">
-                      <input type="text" class="form-control" id="inputSkills" placeholder="Skills">
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
-                      <div class="checkbox">
-                        <label>
-                          <input type="checkbox"> I agree to the <a href="#">terms and conditions</a>
-                        </label>
-                      </div>
-                    </div>
-                  </div>
                   <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
                       <button type="submit" class="btn btn-danger">Submit</button>
@@ -243,4 +304,16 @@
 <script src="<%=path %>/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <!-- AdminLTE App -->
 <script src="<%=path %>/dist/js/adminlte.min.js"></script>
-</body></html>
+<!-- bootstrap datepicker -->
+<script src="<%=path %>/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+<!-- Select2 -->
+<script src="<%=path %>/bower_components/select2/dist/js/select2.full.min.js"></script>
+<script>
+//Date picker
+$('#date_of_birth').datepicker({
+  autoclose: true
+})
+$('.select2').select2()
+</script>
+</body>
+</html>
